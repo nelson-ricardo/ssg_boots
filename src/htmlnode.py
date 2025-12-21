@@ -21,3 +21,31 @@ class HTMLNode:
             ret_string += f"{attr}=\"{self.props[attr]}\" "
         
         return ret_string.rstrip()
+
+class LeafNode(HTMLNode):
+    # LeafNode represents a single HTML tag with no children like:
+    # <p>This is a paragraph </p>
+
+    # initialize properties of HTMLNode passed in from LeafNode
+    def __init__(self, tag, value, props=None):
+        super().__init__(tag, value, None, props)
+    
+    def to_html(self):
+        # value does not exist
+        if self.value is None:
+            raise ValueError("All leaf nodes **must** have a value")
+
+        # there is no tag information
+        if self.tag is None:
+            return self.value
+
+        # changes props to html
+        properties = self.props_to_html()
+
+        # if there are no properties makes a clean html tag
+        # if there are properties it adds one space, then properties
+        # then everything else
+        if properties == "":
+            return f"<{self.tag}>{self.value}</{self.tag}>"
+        else:
+            return f"<{self.tag} {properties}>{self.value}</{self.tag}>"
