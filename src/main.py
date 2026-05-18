@@ -1,7 +1,7 @@
 from textnode import TextNode, TextType
 
 def main():
-    regNode = TextNode("this is some anchor text", TextType.IMAGE, "https://www.boot.dev")
+    regNode = TextNode("this is some anchor text", TextType.BOLD)
     trueComp = TextNode("this is some anchor text", TextType.IMAGE, "https://www.boot.dev")
     falseComp = TextNode("gibberish", TextType.BOLD)
 
