@@ -1,14 +1,17 @@
 from textnode import TextNode, TextType
+from htmlnode import HTMLNode
 
 def main():
-    regNode = TextNode("this is some anchor text", TextType.BOLD)
-    trueComp = TextNode("this is some anchor text", TextType.IMAGE, "https://www.boot.dev")
-    falseComp = TextNode("gibberish", TextType.BOLD)
+    node1 = HTMLNode("p", "paragraph 1")
+    node2 = HTMLNode("p", "paragraph 2")
+    props = {
+        "class": "solid",
+        "id": "main-info"
+    }
 
-    print("Test representation output")
-    print(regNode)
-    print(f"Test if equality works w/ the same object: {regNode == trueComp}")
-    print(f"Test if equality works w/ not the same object: {regNode == falseComp}")
+    testNode = HTMLNode("p", "just a plain paragraph", [node1, node2], props)
+
+    print(testNode)
 
 if __name__ == "__main__":
     main()
