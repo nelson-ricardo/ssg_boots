@@ -1,6 +1,6 @@
 import unittest
 
-from htmlnode import HTMLNode
+from htmlnode import HTMLNode, LeafNode
 
 class TestHTMLNode(unittest.TestCase):
     # check representation without children or props
@@ -25,13 +25,51 @@ class TestHTMLNode(unittest.TestCase):
         exp_out = "HTMLNode(div, value, [HTMLNode(p, p1, None, None)], {'class': 'c1', 'id': 'id1'})"
         self.assertEqual(repr(test_node), exp_out)
     # check props to html with props
-    def props_to_html(self):
+    def test_props_to_html(self):
         props = {
             "class": "solid"
         }
         test_node_props = HTMLNode("p", "value", None, props).props_to_html()
-        self.assertEqual(test_node_props, "class=\"solid\"")
+        self.assertEqual(test_node_props, " class=\"solid\"")
     # check props to html without props
-    def no_props_to_html(self):
+    def test_no_props_to_html(self):
         test_node_props = HTMLNode("p", "value")
         self.assertEqual("", test_node_props.props_to_html())
+    
+    # check LeafNode representation
+    def test_leafNode_rep(self):
+        test_node = LeafNode("string", "p")
+        exp_out = "LeafNode(p, string, None)"
+        self.assertEqual(repr(test_node), exp_out)
+    # check LeafNode representation with props
+    def test_leafNode_props_rep(self):
+        props = {
+            "class": "solid"
+        }
+        test_node = LeafNode("value", "p", props)
+        exp_out = "LeafNode(p, value, {'class': 'solid'})"
+        self.assertEqual(repr(test_node), exp_out)
+    # check LeafNode html with no props
+    def test_leafNode_html_no_props(self):
+        test_node = LeafNode("paragraph", "p1")
+        exp_out = "<p1>paragraph</p1>"
+        self.assertEqual(test_node.to_html(), exp_out)
+    # check LeafNode html with one prop
+    def test_leafNode_html_one_prop(self):
+        prop = {
+            "class": "solid"
+        }
+        test_node = LeafNode("paragraph", "p1", prop)
+        exp_out = "<p1 class=\"solid\">paragraph</p1>"
+        self.assertEqual(test_node.to_html(), exp_out)
+    # check LeafNode html with mult props
+    def test_leafNode_html_mult_props(self):
+        props = {
+            "class": "link",
+            "id": "main-website",
+            "href": "http://example.com",
+            "target": "_blank"
+        }
+        test_node = LeafNode("link", "a", props)
+        exp_out = "<a class=\"link\" id=\"main-website\" href=\"http://example.com\" target=\"_blank\">link</a>"
+        self.assertEqual(test_node.to_html(), exp_out)
