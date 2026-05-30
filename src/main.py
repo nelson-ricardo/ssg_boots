@@ -1,11 +1,9 @@
-from textnode import TextNode, TextType
+from textnode import TextNode, TextType, text_node_to_html_node
 from htmlnode import HTMLNode, LeafNode, ParentNode
 
 def main():
-        child_node = LeafNode(tag="span", value="child")
-        parent_node = ParentNode("div", [child_node])
-        
-        print(parent_node.to_html())
+        random_node = TextNode("text", TextType.BOLD)
+        new_node = text_node_to_html_node(random_node)
 
 if __name__ == "__main__":
     main()
