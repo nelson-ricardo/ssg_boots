@@ -1,17 +1,11 @@
 from textnode import TextNode, TextType
-from htmlnode import HTMLNode
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 def main():
-    node1 = HTMLNode("p", "paragraph 1")
-    node2 = HTMLNode("p", "paragraph 2")
-    props = {
-        "class": "solid",
-        "id": "main-info"
-    }
-
-    testNode = HTMLNode("p", "just a plain paragraph", [node1, node2], props)
-
-    print(testNode)
+        child_node = LeafNode(tag="span", value="child")
+        parent_node = ParentNode("div", [child_node])
+        
+        print(parent_node.to_html())
 
 if __name__ == "__main__":
     main()
