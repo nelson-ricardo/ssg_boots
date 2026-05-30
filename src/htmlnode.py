@@ -19,7 +19,7 @@ class HTMLNode():
     def to_html(self):
         raise NotImplementedError
     
-    def props_to_html(self):
+    def props_to_html(self) -> str:
         if self.props is not None:
             ret_string = ""
             for prop in self.props:
@@ -32,10 +32,10 @@ class HTMLNode():
         return f"HTMLNode({self.tag}, {self.value}, {self.children}, {self.props})"
 
 class LeafNode(HTMLNode):
-    def __init__(self, value: str, tag: str | None, props: dict[str, str] | None = None):
+    def __init__(self, tag: str, value: str | None, props: dict[str, str] | None = None):
         super().__init__(tag, value, None, props)
     
-    def to_html(self):
+    def to_html(self) -> str:
         if self.value is None: 
             raise ValueError("invalid HTML: need value")
         elif self.tag is None:
@@ -50,6 +50,23 @@ class ParentNode(HTMLNode):
     def __init__(self, tag: str, children: list[HTMLNode], props: dict[str, str] | None = None):
         super().__init__(tag, None, children, props)
     
-    def to_html(self):
-        # TODO: work on the to html function the next time, this is done recursively chat ngl
-        pass
+    def to_html(self) -> str:
+
+        # handles the case were Parent Node does not have a tag
+        # or children, a parent node ALWAYS has children, if not it would be
+        # a leaf node
+        if self.tag is None:
+            raise ValueError("Node needs a tag value")
+        if self.children is None:
+            raise ValueError("Node needs children")
+
+
+        ret_string = f"<{self.tag}{self.props_to_html()}>"
+        for childNode in self.children:
+            ret_string += childNode.to_html()
+        ret_string += f"</{self.tag}>"
+
+        return ret_string
+    
+    def __repr__(self) -> str:
+        return f"ParentNode({self.tag}, children: {self.children}, {self.props})"
