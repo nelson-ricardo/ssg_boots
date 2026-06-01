@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode, TextType
-from textnode_functions import text_node_to_html_node, split_nodes_delimiter
+from textnode_functions import text_node_to_html_node, split_nodes_delimiter, extract_markdown_links, extract_markdown_images
 from htmlnode import LeafNode
 
 class TestTextNode(unittest.TestCase):
@@ -97,6 +97,15 @@ class TestTextNode(unittest.TestCase):
         node = TextNode("I have a small **house**", TextType.TEXT)
         with self.assertRaises(ValueError):
             new_nodes = split_nodes_delimiter([node], "!!!", TextType.BOLD)
+    def test_extract_markdown_images(self):
+        img_string = "![water](./water)"
+        exp_match = [("water", "./water")]
+        self.assertEqual(exp_match, extract_markdown_images(img_string))
+    def test_extract_markdown_links(self):
+        link_string = "[water](water.com)"
+        exp_match = [("water", "water.com")]
+        self.assertEqual(exp_match, extract_markdown_links(link_string))
+    
     
         
 
