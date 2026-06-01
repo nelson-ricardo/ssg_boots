@@ -1,14 +1,14 @@
 from textnode import TextNode, TextType
-from textnode_functions import text_node_to_html_node, extract_markdown_images, extract_markdown_links
+from textnode_functions import text_node_to_html_node, extract_markdown_images, extract_markdown_links, split_nodes_images, split_nodes_link
 from htmlnode import HTMLNode, LeafNode, ParentNode
 
 def main():
-    image_string = "![hotdog](./hotdog.jpg) ![car](https://car.com/cool-car.webp)"
-    links_string = "[lolol](https://lol.com) goes to somewhere in the forest [the forest](https://the-firest.com) and he lies there"
-    images_list = extract_markdown_images(image_string)
-    links_list = extract_markdown_links(links_string)
+    image_string = "I have a very cute cat, here is a picture of it: [cute cat](http://example.com) and I love it, I also have a dog, here it is: [cute dog](http://example.com) I love my animals"
+    node = TextNode(image_string, TextType.TEXT)
+    list = split_nodes_link([node, node, node, TextNode("yurr", TextType.BOLD), node])
 
-    print("images", images_list, "links", links_list)
+    print(list)
+
 
 if __name__ == "__main__":
     main()
