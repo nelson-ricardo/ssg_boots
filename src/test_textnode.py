@@ -1,5 +1,6 @@
 import unittest
-from textnode import TextNode, TextType, text_node_to_html_node
+from textnode import TextNode, TextType
+from textnode_functions import text_node_to_html_node, split_nodes_delimiter
 from htmlnode import LeafNode
 
 class TestTextNode(unittest.TestCase):
@@ -60,6 +61,42 @@ class TestTextNode(unittest.TestCase):
         node = TextNode("text", TextType.IMAGE)
         with self.assertRaises(ValueError):
             rep_node = text_node_to_html_node(node)
+    def test_split_delimiter_bold_start(self):
+        node = TextNode("**I** have a small house", TextType.TEXT)
+        new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
+        exp_nodes = [TextNode("I", TextType.BOLD), TextNode(" have a small house", TextType.TEXT)]
+        self.assertEqual(exp_nodes, new_nodes)
+    def test_split_delimiter_bold_middle(self):
+        node = TextNode("I have a **small** house", TextType.TEXT)
+        new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
+        exp_nodes = [
+            TextNode("I have a ", TextType.TEXT),
+            TextNode("small", TextType.BOLD),
+            TextNode(" house", TextType.TEXT)
+        ]
+        self.assertEqual(exp_nodes, new_nodes)
+    def test_split_delimiter_bold_end(self):
+        node = TextNode("I have a small **house**", TextType.TEXT)
+        new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
+        exp_nodes = [
+            TextNode("I have a small ", TextType.TEXT),
+            TextNode("house", TextType.BOLD),
+        ]
+        self.assertEqual(exp_nodes, new_nodes)
+    def test_split_delimiter_non_text_node(self):
+        non_text_node = TextNode("I love pizza", TextType.ITALIC)
+        node = TextNode("I have a small **house**", TextType.TEXT)
+        new_nodes = split_nodes_delimiter([non_text_node, node], "**", TextType.BOLD)
+        exp_nodes = [
+            non_text_node, 
+            TextNode("I have a small ", TextType.TEXT),
+            TextNode("house", TextType.BOLD),
+        ]
+        self.assertEqual(exp_nodes, new_nodes)
+    def test_split_delimiter_invalid_delim(self):
+        node = TextNode("I have a small **house**", TextType.TEXT)
+        with self.assertRaises(ValueError):
+            new_nodes = split_nodes_delimiter([node], "!!!", TextType.BOLD)
     
         
 
