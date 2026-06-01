@@ -59,3 +59,44 @@ def extract_markdown_images(text) -> list[tuple[str, str]]:
 def extract_markdown_links(text) -> list[tuple[str, str]]:
     matches = re.findall(r"\[(.+?)\]\((.+?)\)", text)
     return matches
+
+def split_nodes_images(old_nodes: list[TextNode]) -> list[TextNode]:
+    pattern = r"(!\[.+?\]\(.+?\))"
+
+    ret_list = list()
+
+    for node in old_nodes:
+        if node.text_type is not TextType.TEXT:
+            ret_list.append(node)
+            continue
+        matches = re.split(pattern, node.text)
+        for i, string in enumerate(matches):
+            if string == "":
+                continue
+            if (i + 1) % 2 == 0:
+                alt, url = extract_markdown_images(string)[0]
+                ret_list.append(TextNode(alt, TextType.IMAGE, url))
+            else:
+                ret_list.append(TextNode(string, TextType.TEXT))
+    return ret_list
+
+def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
+    pattern = r"(\[.+?\]\(.+?\))"
+
+    ret_list = list()
+
+    for node in old_nodes:
+        if node.text_type is not TextType.TEXT:
+            ret_list.append(node)
+            continue
+        matches = re.split(pattern, node.text)
+        for i, string in enumerate(matches):
+            if string == "":
+                continue
+            if (i + 1) % 2 == 0:
+                text, url = extract_markdown_links(string)[0]
+                ret_list.append(TextNode(text, TextType.LINK, url))
+            else:
+                ret_list.append(TextNode(string, TextType.TEXT))
+    
+    return ret_list
