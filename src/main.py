@@ -1,26 +1,14 @@
 from textnode import TextNode, TextType
-from textnode_functions import text_node_to_html_node
+from textnode_functions import text_node_to_html_node, extract_markdown_images, extract_markdown_links
 from htmlnode import HTMLNode, LeafNode, ParentNode
 
 def main():
-    DELIM = "**"
+    image_string = "![hotdog](./hotdog.jpg) ![car](https://car.com/cool-car.webp)"
+    links_string = "[lolol](https://lol.com) goes to somewhere in the forest [the forest](https://the-firest.com) and he lies there"
+    images_list = extract_markdown_images(image_string)
+    links_list = extract_markdown_links(links_string)
 
-    first_string: str = "**I** have a small house"
-    second_string: str = "I have a **small** house"
-    third_string: str = "I have a small **house**"
-
-    split_string_first = third_string.split("**")
-    ret_list = list()
-
-    for i, string in enumerate(split_string_first):
-        if string == "":
-            continue
-        if (i + 1) % 2 == 0:
-            ret_list.append(TextNode(string, TextType.BOLD))
-        else:
-            ret_list.append(TextNode(string, TextType.TEXT))
-    
-    print(ret_list)
+    print("images", images_list, "links", links_list)
 
 if __name__ == "__main__":
     main()
