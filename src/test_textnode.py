@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode, TextType
-from textnode_functions import text_node_to_html_node, split_nodes_delimiter, extract_markdown_links, extract_markdown_images
+from textnode_functions import text_node_to_html_node, split_nodes_delimiter, extract_markdown_links, extract_markdown_images, split_nodes_images, split_nodes_link
 from htmlnode import LeafNode
 
 class TestTextNode(unittest.TestCase):
@@ -105,8 +105,38 @@ class TestTextNode(unittest.TestCase):
         link_string = "[water](water.com)"
         exp_match = [("water", "water.com")]
         self.assertEqual(exp_match, extract_markdown_links(link_string))
-    
-    
+    def test_split_images(self):
+        node = TextNode(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)",
+            TextType.TEXT,
+        )
+        new_nodes = split_nodes_images([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with an ", TextType.TEXT),
+                TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" and another ", TextType.TEXT),
+                TextNode(
+                    "second image", TextType.IMAGE, "https://i.imgur.com/3elNhQu.png"
+                ),
+            ],
+            new_nodes,
+        )
+    def test_split_links(self):
+        node = TextNode(
+            "I have a link to [youtube](youtube.com) and [netflix](netflix.com)",
+            TextType.TEXT
+        )
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual(
+            [
+                TextNode("I have a link to ", TextType.TEXT),
+                TextNode("youtube", TextType.LINK, "youtube.com"),
+                TextNode(" and ", TextType.TEXT),
+                TextNode("netflix", TextType.LINK, "netflix.com")
+            ],
+            new_nodes
+        )
         
 
 if __name__ == "__main__":
