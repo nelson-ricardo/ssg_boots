@@ -85,3 +85,10 @@ def text_to_textnodes(text: str) -> list[TextNode]:
     ret_nodes = split_nodes_link(ret_nodes)
 
     return ret_nodes
+
+def markdown_to_blocks(markdown: str) -> list[str]:
+    split_markdown = markdown.split("\n\n")
+    no_empty_list = [item for item in split_markdown if item != ""]
+    ret_list = list(map(lambda x: x.strip(), no_empty_list))
+    
+    return ret_list
