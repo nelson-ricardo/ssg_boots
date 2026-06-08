@@ -1,10 +1,16 @@
-import os, shutil
+import os, shutil, sys
 
 from textnode import TextNode, TextType
 from textnode_functions import text_node_to_html_node
 from node_split_func import extract_markdown_images, extract_markdown_links, split_nodes_images, split_nodes_link, text_to_textnodes, markdown_to_blocks, split_nodes_delimiter
 from htmlnode import HTMLNode, LeafNode, ParentNode
 from md_to_html import generate_pages_recursive
+
+dir_path_static = "./static"
+dir_path_public = "./docs"
+dir_path_content = "./content"
+template_path = "./template.html"
+default_basepath = "/"
 
 def cp_static_to_public():
 
@@ -32,8 +38,12 @@ def copy_files_to_public(src_path: str, dest_path: str):
             
 
 def main():
+    basepath = default_basepath
+    if len(sys.argv) > 1:
+        basepath = sys.argv[1]
+
     cp_static_to_public()
-    generate_pages_recursive("./content", "./template.html", "./public")
+    generate_pages_recursive(dir_path_content, template_path, dir_path_public, basepath)
 
 
 if __name__ == "__main__":
