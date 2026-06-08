@@ -15,15 +15,15 @@ default_basepath = "/"
 def cp_static_to_public():
 
     # removes the current contents of public if it already exists
-    if os.path.exists("./public"):
+    if os.path.exists("./docs"):
         print("Removing the public folder")
-        shutil.rmtree("./public")
-        os.mkdir("./public")
+        shutil.rmtree("./docs")
+        os.mkdir("./docs")
     else:
         print("Nothing to remove")
-        os.mkdir("./public")
+        os.mkdir("./docs")
 
-    copy_files_to_public("static", "public")
+    copy_files_to_public("static", "docs")
 
 def copy_files_to_public(src_path: str, dest_path: str):
     items = os.listdir(f"./{src_path}")
