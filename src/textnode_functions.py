@@ -23,4 +23,4 @@ def text_node_to_html_node(text_node: TextNode) -> LeafNode:
         if text_node.url is None or text_node.text is None:
             raise ValueError("TextNode: IMAGE expects url and text")
 
-        return LeafNode("img", None, {"src": text_node.url, "alt": text_node.text})
+        return LeafNode("img", text_node.url, {"src": text_node.url, "alt": text_node.text})

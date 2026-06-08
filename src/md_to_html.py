@@ -1,3 +1,6 @@
+import re, os
+from pathlib import Path
+
 from htmlnode import HTMLNode, ParentNode, LeafNode
 from textnode import TextNode, TextType
 from node_split_func import text_to_textnodes
@@ -11,6 +14,49 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
         html_node = block_to_html_node(block)
         children.append(html_node)
     return ParentNode("div", children, None)
+
+def extract_title(markdown: str) -> str:
+    heading: list[str] = re.findall(r"^# (.+)", markdown)
+
+    if len(heading) != 1:
+        raise ValueError("Malformed markdown, needs exactly 1 H1 heading")
+    else:
+        return heading[0].strip()
+    
+def generate_page(from_path: str, template_path: str, dest_path: str | Path) -> None:
+    print(f" * {from_path} {template_path} -> {dest_path}")
+    from_file = open(from_path, "r")
+    markdown_content = from_file.read()
+    from_file.close()
+
+    template_file = open(template_path, "r")
+    template = template_file.read()
+    template_file.close()
+
+    node = markdown_to_html_node(markdown_content)
+    html = node.to_html()
+
+    title = extract_title(markdown_content)
+    template = template.replace("{{ Title }}", title)
+    template = template.replace("{{ Content }}", html)
+
+    dest_dir_path = os.path.dirname(dest_path)
+    if dest_dir_path != "":
+        os.makedirs(dest_dir_path, exist_ok=True)
+    to_file = open(dest_path, "w")
+    to_file.write(template)
+
+def generate_pages_recursive(
+    dir_path_content: str, template_path: str, dest_dir_path: str
+) -> None:
+    for filename in os.listdir(dir_path_content):
+        from_path = os.path.join(dir_path_content, filename)
+        dest_path = os.path.join(dest_dir_path, filename)
+        if os.path.isfile(from_path):
+            dest_path = Path(dest_path).with_suffix(".html")
+            generate_page(from_path, template_path, dest_path)
+        else:
+            generate_pages_recursive(from_path, template_path, dest_path)
 
 def block_to_html_node(block: str) -> ParentNode:
     block_type = block_to_block_type(block)
